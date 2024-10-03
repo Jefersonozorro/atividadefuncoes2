@@ -1,0 +1,68 @@
+# atividadefuncoes2
+atividade funcoes 2
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cadastro de Produtos</title>
+</head>
+<body>
+    <form action="" method="post">
+        <?php for ($i = 1; $i <= 5; $i++): ?>
+            <label for="produto<?php echo $i; ?>">Nome do Produto <?php echo $i; ?>:</label>
+            <input type="text" id="produto<?php echo $i; ?>" name="produtos[]">
+            <label for="preco<?php echo $i; ?>">Preço:</label>
+            <input type="text" id="preco<?php echo $i; ?>" name="precos[]">
+            <br>
+        <?php endfor; ?>
+        <input type="submit" value="Enviar">
+    </form>
+
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $produtos = $_POST['produtos'];
+        $precos = $_POST['precos'];
+
+        function contarProdutosInferiores($precos) {
+            $contagem = 0;
+            foreach ($precos as $preco) {
+                if ($preco < 50) {
+                    $contagem++;
+                }
+            }
+            return $contagem;
+        }
+
+        function listarProdutosEntre($produtos, $precos) {
+            $lista = [];
+            foreach ($precos as $index => $preco) {
+                if ($preco >= 50 && $preco <= 100) {
+                    $lista[] = $produtos[$index];
+                }
+            }
+            return $lista;
+        }
+
+        function calcularMediaSuperiores($precos) {
+            $soma = 0;
+            $contagem = 0;
+            foreach ($precos as $preco) {
+                if ($preco > 100) {
+                    $soma += $preco;
+                    $contagem++;
+                }
+            }
+            return $contagem > 0 ? $soma / $contagem : 0;
+        }
+
+        $quantidadeInferiores = contarProdutosInferiores($precos);
+        $produtosEntre = listarProdutosEntre($produtos, $precos);
+        $mediaSuperiores = calcularMediaSuperiores($precos);
+
+        echo "<p>Quantidade de produtos com preço inferior a R\$50,00: {$quantidadeInferiores}</p>";
+        echo "<p>Produtos com preço entre R\$50,00 e R\$100,00: " . implode(", ", $produtosEntre) . "</p>";
+        echo "<p>Média dos preços dos produtos com preço superior a R\$100,00: R\$" . number_format($mediaSuperiores, 2) . "</p>";
+    }
+    ?>
+</body>
+</html>
+
